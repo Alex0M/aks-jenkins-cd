@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: master
+  template:
+    metadata:
+      labels:
+        app: master
+    spec:
+      containers:
+      - name: master
+        image: jenkins/jenkins
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 2
+          failureThreshold: 5
+        env:
+        - name: JENKINS_OPTS
+          valueFrom:
+            secretKeyRef:
+              name: jenkins
+              key: options
+        - name: JAVA_OPTS
+          value: '-Xmx1400m'
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1500Mi
+          requests:
+            cpu: 500m
+            memory: 1500Mi
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: jenkins-ui
+    namespace: jenkins
+  spec:
+    type: LoadBalancer
+    selector:
+      app: master
+    ports:
+      - protocol: TCP
+        port: 8080
+        targetPort: 8080
+        name: ui
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: jenkins-discovery
+    namespace: jenkins
+  spec:
+    selector:
+      app: master
+    ports:
+      - protocol: TCP
+        port: 50000
+        targetPort: 50000
+        name: slaves
