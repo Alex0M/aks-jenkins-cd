@@ -3,7 +3,7 @@ node {
   def appName = 'psrestapi'
   def imageName = "${acr}/${appName}"
   def imageTag = "${imageName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-  def appRepo = "devopscampdemo.azurecr.io/psrestapi:0.2.0"
+  def appRepo = "devopscampdemo.azurecr.io/psrestapi:latest"
 
   checkout scm
   
@@ -21,10 +21,10 @@ node {
     // Roll out to canary environment
     case "canary":
         // Change deployed image in canary to the one we just built
-        sh("sed -i.bak 's#${appRepo}#${imageTag}@${DIGEST[2]}#' ./k8s/canary/*.yaml")
-        sh("kubectl --namespace=sock-shop apply -f k8s/services/")
-        sh("kubectl --namespace=sock-shop apply -f k8s/canary/")
-        sh("echo http://`kubectl --namespace=sock-shop get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
+        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/canary/*.yaml")
+        sh("kubectl --namespace=psrestapi-production apply -f k8s/services/")
+        sh("kubectl --namespace=psrestapi-production apply -f k8s/canary/")
+        sh("echo http://`kubectl --namespace=psrestapi-production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
         break
 
     // Roll out to production

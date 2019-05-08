@@ -1,15 +1,15 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: psrestapi-production
+  name: psrestapi-canary
 spec:
-  replicas: 1
+  replicas:
   template:
     metadata:
       name: psrestapi
       labels:
         app: psrestapi
-        env: production
+        env: canary
     spec:
       containers:
       - name: psrestapi
