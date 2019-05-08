@@ -5,12 +5,12 @@ node {
   def imageTag = "${acr}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
   checkout scm
-
-  stage 'Build the Image and Push to Azure Container Registry'
-  {
-    app = docker.build("${imageTag}")
-                  withDockerRegistry([credentialsId: 'acr_credentials', url: "${acr}"]) {
-                  app.push("${imageTag}")
-                  }
-  }
+  
+ stage('Build the Image and Push to Azure Container Registry')          {
+   app = docker.build("${imageTag}")
+   withDockerRegistry([credentialsId: 'acr_credentials', url: "${acr}"]) {
+                app.push("${imageTag}")
+                app.push('latest')
+                }
+        }
 }
