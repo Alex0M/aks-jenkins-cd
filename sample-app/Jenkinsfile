@@ -6,13 +6,11 @@ node {
 
   checkout scm
 
-  stage 'Build image'
-  sh("docker build -t ${imageTag} .")
-
-  stage 'Run Go tests'
-  sh("docker run ${imageTag} go test")
-
-  stage 'Push image to registry'
-  sh("docker push ${imageTag}")
-
+  stage 'Build the Image and Push to Azure Container Registry'
+  {
+    app = docker.build("${imageTag}")
+                  withDockerRegistry([credentialsId: 'acr_credentials', url: "${acr}"]) {
+                  app.push("${imageTag}")
+                  }
+  }
 }
