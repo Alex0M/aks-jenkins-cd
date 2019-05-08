@@ -2,7 +2,7 @@ node {
   def acr = 'devopscampdemo.azurecr.io'
   def appName = 'gceme'
   def feSvcName = "${appName}-frontend"
-  def imageTag = "${acr}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+  def imageTag = "${acr}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
   checkout scm
   
