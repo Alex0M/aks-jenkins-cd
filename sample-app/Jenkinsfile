@@ -10,7 +10,6 @@ node {
    app = docker.build("${imageTag}")
    withDockerRegistry([credentialsId: 'acr_credentials', url: "https://${acr}"]) {
                 app.push("${imageTag}")
-                app.push('latest')
                 }
         }
 }
