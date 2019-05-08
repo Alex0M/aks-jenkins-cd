@@ -1,15 +1,14 @@
 node {
   def acr = 'devopscampdemo.azurecr.io'
   def appName = 'gceme'
-  def feSvcName = "${appName}-frontend"
-  def imageTag = "${acr}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+  def imageTag = "${acr}/${appName}"
 
   checkout scm
   
  stage('Build the Image and Push to Azure Container Registry')          {
    app = docker.build("${imageTag}")
    withDockerRegistry([credentialsId: 'acr_credentials', url: "https://${acr}"]) {
-                app.push("${imageTag}")
+                app.push("${env.BRANCH_NAME}.${env.BUILD_NUMBER}")
                 }
         }
 }
