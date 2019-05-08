@@ -15,7 +15,8 @@ node {
                 }
   }
 
- stage "Deploy Application on Azure Kubernetes Service." 
+ stage ("Deploy Application on Azure Kubernetes Service")
+ {
   switch (env.BRANCH_NAME) {
     // Roll out to canary environment
     case "canary":
@@ -47,4 +48,5 @@ node {
         echo 'To access your environment run `kubectl proxy`'
         echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}/services/${feSvcName}:80"     
     }
+  }
 }
