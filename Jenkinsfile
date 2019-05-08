@@ -15,7 +15,7 @@ node {
                 }
   }
 
- stage "Deploy Application on Azure Kubernetes Service" 
+ stage "Deploy Application on Azure Kubernetes Service." 
   switch (env.BRANCH_NAME) {
     // Roll out to canary environment
     case "canary":
