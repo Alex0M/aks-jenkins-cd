@@ -29,11 +29,6 @@ spec:
           successThreshold: 2
           failureThreshold: 5
         env:
-        - name: JENKINS_OPTS
-          valueFrom:
-            secretKeyRef:
-              name: jenkins
-              key: options
         - name: JAVA_OPTS
           value: '-Xmx1400m'
         resources:
@@ -55,7 +50,7 @@ spec:
       app: master
     ports:
       - protocol: TCP
-        port: 8080
+        port: 80
         targetPort: 8080
         name: ui
 ---

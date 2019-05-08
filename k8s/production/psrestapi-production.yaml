@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: psrestapi-production
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: psrestapi
+      labels:
+        app: psrestapi
+        env: production
+    spec:
+      containers:
+      - name: psrestapi
+        image: devopscampdemo.azurecr.io/psrestapi:0.2.0
+        resources:
+          limits:
+            memory: "300Mi"
+            cpu: "100m"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+        readinessProbe:
+          httpGet:
+            path: /version
+            port: 4000
+      imagePullSecrets:
+      - name: acr-auth
