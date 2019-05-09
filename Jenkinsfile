@@ -42,7 +42,7 @@ node {
         // Create namespace if it doesn't exist
         sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
         withCredentials([usernamePassword(credentialsId: 'acr_auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry acr-auth --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret acr-auth || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry acr-auth --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }  
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
         sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/dev/")
