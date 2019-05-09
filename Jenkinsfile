@@ -41,9 +41,11 @@ node {
     default:
         // Create namespace if it doesn't exist
         sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
-        // Don't use public load balancing for development branches
-        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
-        sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/dev/")
+        withCredentials([usernamePassword(credentialsId: 'acr_auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh 'echo uname=$USERNAME pwd=$PASSWORD'
+        }  
+        //sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
+        //sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/dev/")
         echo 'To access your environment run `kubectl proxy`'
         echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${appName}-${env.BRANCH_NAME}/services/${appName}:80"     
     }
