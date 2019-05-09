@@ -1,19 +1,19 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: psrestapi-production
+  name: psrestapi-dev
 spec:
-  replicas: 1
+  replicas:
   template:
     metadata:
       name: psrestapi
       labels:
         app: psrestapi
-        env: production
+        env: dev
     spec:
       containers:
       - name: psrestapi
-        image: test01cntrgtr.azurecr.io/psrestapi:0.2.0
+        image: test01cntrgtr.azurecr.io/psrestapi:latest
         resources:
           limits:
             memory: "300Mi"
@@ -27,3 +27,18 @@ spec:
             port: 4000
       imagePullSecrets:
       - name: acr-auth
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: psrestapi
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 4000
+    protocol: TCP
+  selector:
+    app: psrestapi
+

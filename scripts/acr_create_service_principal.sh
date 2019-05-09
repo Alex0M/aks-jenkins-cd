@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ACR_NAME=devopscampdemo
+ACR_NAME=test01CntRgtr
 SERVICE_PRINCIPAL_NAME=acr-service-principal
 
 # Populate the ACR login server and resource id.

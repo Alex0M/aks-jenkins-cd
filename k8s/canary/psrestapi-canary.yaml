@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: psrestapi
-        image: devopscampdemo.azurecr.io/psrestapi:latest
+        image: test01cntrgtr.azurecr.io/psrestapi:latest
         resources:
           limits:
             memory: "300Mi"

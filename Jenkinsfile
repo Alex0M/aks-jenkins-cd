@@ -24,7 +24,7 @@ node {
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/canary/*.yaml")
         sh("kubectl --namespace=psrestapi-production apply -f k8s/services/")
         sh("kubectl --namespace=psrestapi-production apply -f k8s/canary/")
-        sh("echo http://`kubectl --namespace=psrestapi-production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
+        sh("echo http://`kubectl --namespace=psrestapi-production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
         break
 
     // Roll out to production
@@ -39,14 +39,12 @@ node {
     // Roll out a dev environment
     default:
         // Create namespace if it doesn't exist
-        sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
+        sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
         // Don't use public load balancing for development branches
-        sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/${feSvcName}.yaml")
-        sh("sed -i.bak 's#${appRepo}#${imageTag}@${DIGEST[2]}#' ./k8s/dev/*.yaml")
-        sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/services/")
-        sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/dev/")
+        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
+        sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/dev/")
         echo 'To access your environment run `kubectl proxy`'
-        echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}/services/${feSvcName}:80"     
+        echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${appName}-${env.BRANCH_NAME}/services/${appName}:80"     
     }
   }
 }
