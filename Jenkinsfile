@@ -1,9 +1,9 @@
 node {
-  def acr = 'devopscampdemo.azurecr.io'
+  def acr = 'test01cntrgtr.azurecr.io'
   def appName = 'psrestapi'
   def imageName = "${acr}/${appName}"
   def imageTag = "${imageName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-  def appRepo = "devopscampdemo.azurecr.io/psrestapi:latest"
+  def appRepo = "test01cntrgtr.azurecr.io/psrestapi:0.2.0"
 
   checkout scm
   
