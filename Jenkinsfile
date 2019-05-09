@@ -15,6 +15,7 @@ node {
                 }
   }
 
+
  stage ("Deploy Application on Azure Kubernetes Service")
  {
   switch (env.BRANCH_NAME) {
