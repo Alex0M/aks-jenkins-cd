@@ -13,7 +13,7 @@ def healthz():
 @app.route('/version')
 def version():
 
-    return "v0.2.0"
+    return "v0.2.0-devnew"
 
 
 @app.route('/cpu')
